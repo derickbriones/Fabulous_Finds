@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $seller_id = 1;
 
   // Handle optional image upload
-  $image_name = NULL;
+  $image_name = ''; // Default empty string to match database NOT NULL constraint
   if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['product_image']['tmp_name'];
     $fileName = $_FILES['product_image']['name'];
@@ -39,21 +39,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Allowed image extensions
     $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    
+
     if (in_array($fileExtension, $allowedExtensions)) {
       // Create products directory if it doesn't exist
       $uploadDir = __DIR__ . '/images/products';
       if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
       }
-      
-      // Generate unique filename to prevent overwrites
-      $newFileName = uniqid('prod_', true) . '.' . $fileExtension;
+
+      // Use original filename exactly as uploaded
+      $newFileName = $fileName;
       $destPath = $uploadDir . '/' . $newFileName;
 
-      // Move uploaded file to destination
+      // Remove existing file if it exists (overwrite)
+      if (file_exists($destPath)) {
+        unlink($destPath);
+      }
+
+      // Move uploaded file to destination (will overwrite if same name)
       if (move_uploaded_file($fileTmpPath, $destPath)) {
-        $image_name = 'images/products/' . $newFileName;
+        // Store just the filename in database (not the full path)
+        $image_name = $newFileName;
       } else {
         $error = "There was an error moving the uploaded file.";
       }
@@ -64,9 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   // If no errors, insert product into database
   if (!isset($error)) {
-    $insert_query = "INSERT INTO product (ProductName, Category, Price, StockQuantity, SellerID, Image) VALUES (?, ?, ?, ?, ?, ?)";
+    $insert_query = "INSERT INTO product (ProductName, Category, Price, StockQuantity, SellerID, image) VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($insert_query);
-    
+
     // Bind parameters: s = string, d = double, i = integer
     $stmt->bind_param("ssdiis", $product_name, $category, $price, $stock, $seller_id, $image_name);
 
@@ -95,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
   <!-- Main admin container -->
   <div class="container">
-    
+
     <!-- Left sidebar navigation -->
     <aside>
       <div class="top">
@@ -109,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <span class="material-icons-sharp">close</span>
         </div>
       </div>
-      
+
       <!-- Navigation menu -->
       <div class="sidebar">
         <a href="index.php">
@@ -152,59 +158,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </a>
       </div>
     </aside>
-    
+
     <!-- Main content area -->
     <main>
       <h1>Add New Product</h1>
-      
+
       <!-- Display error message if any -->
       <?php if (isset($error)): ?>
         <div style="color: var(--color-danger); margin-bottom: 1rem;"><?php echo $error; ?></div>
       <?php endif; ?>
-      
+
       <!-- Product form container -->
       <div class="form-container">
         <form method="POST" action="" enctype="multipart/form-data">
-          
+
           <!-- Product name input -->
           <div class="form-group">
             <label for="product_name">Product Name</label>
             <input type="text" id="product_name" name="product_name" required>
           </div>
-          
+
           <!-- Image upload (optional) -->
           <div class="form-group">
             <label for="product_image">Image</label>
             <input type="file" id="product_image" name="product_image" accept="image/*">
+            <small>Will be stored with original filename (e.g., uniform.jpg). Existing files with same name will be replaced.</small>
           </div>
-          
+
           <!-- Category input -->
           <div class="form-group">
             <label for="category">Category</label>
             <input type="text" id="category" name="category" required>
           </div>
-          
+
           <!-- Price input -->
           <div class="form-group">
             <label for="price">Price</label>
             <input type="number" id="price" name="price" step="0.01" required>
           </div>
-          
+
           <!-- Stock quantity input -->
           <div class="form-group">
             <label for="stock">Stock Quantity</label>
             <input type="number" id="stock" name="stock" required>
           </div>
-          
+
           <!-- Hidden seller field (fixed to Fabulous Finds) -->
           <input type="hidden" name="seller_id" value="1">
-          
+
           <!-- Submit button -->
           <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
       </div>
     </main>
-    
+
     <!-- Right sidebar -->
     <div class="right">
       <div class="top">
@@ -212,13 +219,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button id="menu-btn">
           <span class="primary material-icons-sharp">menu</span>
         </button>
-        
+
         <!-- Theme toggle -->
         <div class="theme-toggler">
           <span class="material-icons-sharp active">light_mode</span>
           <span class="material-icons-sharp">dark_mode</span>
         </div>
-        
+
         <!-- Admin profile section -->
         <div class="profile">
           <div class="info">
@@ -238,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </body>
 
 </html>
-<?php 
+<?php
 // Close database connection
-$conn->close(); 
+$conn->close();
 ?>
