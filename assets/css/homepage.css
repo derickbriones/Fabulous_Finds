@@ -1,0 +1,214 @@
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Body */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f1e4; /* cream background */
+}
+
+/* Header */
+header {
+    width: 100%;
+    background-color: #ffffff; /* white header */
+    padding: 10px 40px; /* top/bottom 10px, left/right 40px */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+    flex-wrap: wrap; /* allows nav to wrap on smaller screens */
+}
+
+/* Logo */
+header .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #6b4b3e; /* dark text for visibility on white */
+    position: relative;
+    padding-bottom: 5px;
+}
+
+/* Cream underline under logo */
+header .logo::after {
+    content: "";
+    display: block;
+    width: 60px; /* length of underline */
+    height: 3px; /* thickness */
+    background-color: #f8f1e4; /* cream underline */
+    margin-top: 5px;
+    border-radius: 2px;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-right: 96px; /* moves nav 1 inch to the left */
+}
+
+nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #6b4b3e;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Login link as button */
+nav a.login-btn {
+    background-color: #6b4b3e;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 5px;
+    margin-left: 20px;
+    transition: 0.3s;
+}
+
+nav a.login-btn:hover {
+    background-color: #5a3f33;
+}
+
+/* Sections */
+section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 25px 60px 25px; /* top padding includes header height */
+    min-height: auto;
+    box-sizing: border-box;
+}
+
+/* Hero Section */
+.hero {
+    background-color: transparent; /* show body cream */
+    padding-top: 140px; /* ensures About section doesn't peek under header */
+}
+
+.hero-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0; /* reduced vertical spacing */
+}
+
+.hero-text {
+    flex: 1;
+    min-width: 280px;
+    padding: 20px;
+}
+
+.hero-text h1 {
+    font-size: 2rem;
+    color: #6b4b3e;
+    margin-bottom: 15px;
+}
+
+.hero-text p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6b4b3e;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #5a3f33;
+}
+
+.hero-image {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+}
+
+.hero-image img {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+/* About Section */
+#about {
+    background-color: transparent; /* show body cream */
+    flex-direction: column;
+    text-align: center;
+    border-top: 2px solid #e2d2bc;
+    padding: 60px 25px; /* slightly smaller padding */
+}
+
+#about h1 {
+    color: #6b4b3e;
+    margin-bottom: 15px;
+}
+
+#about p {
+    max-width: 700px;
+    margin: 0 auto;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+    header {
+        padding: 10px 20px;
+        justify-content: center;
+    }
+
+    nav {
+        justify-content: center;
+        margin-right: 0; /* remove 1 inch on small screens */
+        margin-top: 10px;
+    }
+
+    nav a {
+        margin: 5px 10px;
+        font-size: 13px;
+    }
+
+    nav a.login-btn {
+        margin: 5px 10px;
+        padding: 5px 12px;
+        font-size: 13px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+    }
+
+    .hero-text, .hero-image {
+        text-align: center;
+    }
+
+    .hero-text h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-text p {
+        font-size: 0.95rem;
+    }
+}

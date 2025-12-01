@@ -1,0 +1,213 @@
+/* Smooth scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f1e4; /* cream background */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.result-container {
+    background: white;
+    border-radius: 10px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+    animation: fadeInUp 0.6s ease-out;
+    border-top: 4px solid #6b4b3e;
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+    background: #6b4b3e; /* dark brown */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: bounce 0.6s ease-out;
+}
+
+.error-icon {
+    width: 80px;
+    height: 80px;
+    background: #8B4513; /* saddle brown for error */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: bounce 0.6s ease-out;
+}
+
+.success-icon i, .error-icon i {
+    color: white;
+    font-size: 40px;
+}
+
+.success-title {
+    color: #6b4b3e; /* dark brown */
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.error-title {
+    color: #8B4513; /* saddle brown */
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.result-message {
+    color: #555; /* dark gray */
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.order-id {
+    background: #f8f1e4; /* cream background */
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 4px solid #6b4b3e;
+    color: #6b4b3e;
+}
+
+.error-message {
+    background: #f8f1e4; /* cream background */
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 4px solid #8B4513;
+    color: #8B4513;
+}
+
+.order-id strong {
+    color: #6b4b3e;
+}
+
+.countdown {
+    color: #555; /* dark gray */
+    font-size: 0.9rem;
+    margin-top: 20px;
+}
+
+.btn-home {
+    background-color: #6b4b3e; /* dark brown */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.3s;
+    margin: 5px;
+}
+
+.btn-retry {
+    background-color: #8B4513; /* saddle brown */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.3s;
+    margin: 5px;
+}
+
+.btn-home:hover {
+    background-color: #5a3f33; /* darker brown */
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-retry:hover {
+    background-color: #7a3a10; /* darker saddle brown */
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .result-container {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .success-title, .error-title {
+        font-size: 1.8rem;
+    }
+    
+    .result-message {
+        font-size: 1rem;
+    }
+    
+    .success-icon, .error-icon {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .success-icon i, .error-icon i {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .result-container {
+        padding: 25px 15px;
+    }
+    
+    .success-title, .error-title {
+        font-size: 1.6rem;
+    }
+    
+    .btn-home, .btn-retry {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+    }
+}

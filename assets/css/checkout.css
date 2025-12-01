@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #fff9e9;
+  color: #333;
+}
+
+/* Checkout Container */
+.checkout-container {
+  width: 90%;
+  max-width: 900px;
+  margin: 30px auto;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f5f0e8;
+  color: #6b4b3e;
+  padding: 12px;
+  text-align: left;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Product info */
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-info img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Total section */
+.checkout-total {
+  text-align: right;
+  margin-top: 20px;
+}
+
+/* PLACE ORDER BUTTON — matched to your brown theme */
+.btn-place-order {
+  background: #6b4b3e;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+
+.btn-place-order:hover {
+  background: #5a3f33;
+}
+
+/* Shipping Address textarea - SMALLER SIZE */
+textarea[name="address"] {
+  width: 100%;
+  max-width: 300px;  /* Smaller width */
+  height: 60px;      /* Smaller height */
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  display: block;
+}
+
+/* Payment Method select box - SMALLER SIZE */
+select[name="payment_method"] {
+  width: 100%;
+  max-width: 200px;   /* Smaller width */
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* Form labels styling */
+.checkout-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #6b4b3e;
+  font-size: 0.9rem;
+}
