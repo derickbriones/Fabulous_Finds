@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
   <!-- Main admin container -->
   <div class="container">
-    
+
     <!-- Left sidebar navigation -->
     <aside>
       <div class="top">
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <span class="material-icons-sharp">close</span>
         </div>
       </div>
-      
+
       <!-- Navigation menu -->
       <div class="sidebar">
         <a href="index.php">
@@ -135,65 +135,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </a>
       </div>
     </aside>
-    
+
     <!-- Main content area -->
     <main>
       <h1>Edit Product</h1>
-      
+
       <!-- Display error message if update fails -->
       <?php if (isset($error)): ?>
         <div style="color: var(--color-danger); margin-bottom: 1rem;"><?php echo $error; ?></div>
       <?php endif; ?>
-      
+
       <!-- Product editing form -->
       <div class="form-container">
         <form method="POST" action="">
-          
+
           <!-- Product name input -->
           <div class="form-group">
             <label for="product_name">Product Name</label>
-            <input type="text" id="product_name" name="product_name" 
-                   value="<?php echo htmlspecialchars($product['ProductName']); ?>" required>
+            <input type="text" id="product_name" name="product_name"
+              value="<?php echo htmlspecialchars($product['ProductName']); ?>" required>
           </div>
-          
+
           <!-- Category input -->
           <div class="form-group">
             <label for="category">Category</label>
-            <input type="text" id="category" name="category" 
-                   value="<?php echo htmlspecialchars($product['Category']); ?>" required>
+            <input type="text" id="category" name="category"
+              value="<?php echo htmlspecialchars($product['Category']); ?>" required>
           </div>
-          
+
           <!-- Price input -->
           <div class="form-group">
             <label for="price">Price</label>
-            <input type="number" id="price" name="price" step="0.01" 
-                   value="<?php echo $product['Price']; ?>" required>
+            <input type="number" id="price" name="price" step="0.01"
+              value="<?php echo $product['Price']; ?>" required>
           </div>
-          
+
           <!-- Stock quantity input -->
           <div class="form-group">
             <label for="stock">Stock Quantity</label>
-            <input type="number" id="stock" name="stock" 
-                   value="<?php echo $product['StockQuantity']; ?>" required>
+            <input type="number" id="stock" name="stock"
+              value="<?php echo $product['StockQuantity']; ?>" required>
           </div>
-          
+
           <!-- Hidden seller field (fixed to Fabulous Finds) -->
           <input type="hidden" name="seller_id" value="1">
-          
+
           <!-- Action buttons -->
           <button type="submit" class="btn btn-primary">Update Product</button>
-          <a href="products.php" class="btn btn-danger" style="margin-left: 1rem;">Cancel</a>
+          <a href="products.php" style="margin-left: 1rem; padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Cancel</a>
         </form>
       </div>
     </main>
   </div>
-  
+
   <!-- Admin dashboard JavaScript -->
   <script src="../assets/js/admin-js.js"></script>
 </body>
 
 </html>
-<?php 
+<?php
 // Close database connection
-$conn->close(); 
+$conn->close();
 ?>
