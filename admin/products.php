@@ -16,14 +16,27 @@ if (!$conn) {
   die("Database connection failed: " . mysqli_connect_error());
 }
 
-// Handle product deletion when delete_id parameter is present
-if (isset($_GET['delete_id'])) {
-  $delete_id = $_GET['delete_id'];
-  $delete_query = "DELETE FROM product WHERE ProductID = ?";
-  $stmt = $conn->prepare($delete_query);
-  $stmt->bind_param("i", $delete_id);  // "i" = integer parameter
+// Handle product status toggle when toggle_id parameter is present
+if (isset($_GET['toggle_id'])) {
+  $toggle_id = $_GET['toggle_id'];
+
+  // First, get the current status
+  $check_query = "SELECT Status FROM product WHERE ProductID = ?";
+  $stmt = $conn->prepare($check_query);
+  $stmt->bind_param("i", $toggle_id);
   $stmt->execute();
-  // Redirect back to products page after deletion
+  $result = $stmt->get_result();
+  $product = $result->fetch_assoc();
+
+  // Toggle the status
+  $new_status = ($product['Status'] == 'A') ? 'D' : 'A';
+
+  $update_query = "UPDATE product SET Status = ? WHERE ProductID = ?";
+  $stmt = $conn->prepare($update_query);
+  $stmt->bind_param("si", $new_status, $toggle_id);
+  $stmt->execute();
+
+  // Redirect back to products page after update
   header("Location: products.php");
   exit();
 }
@@ -32,8 +45,8 @@ if (isset($_GET['delete_id'])) {
 $products_query = "
     SELECT p.*, s.Name as SellerName 
     FROM product p 
-    LEFT JOIN seller s ON p.SellerID = s.SellerID  -- Include seller info
-    ORDER BY p.ProductID DESC                      -- Show newest products first
+    LEFT JOIN seller s ON p.SellerID = s.SellerID
+    ORDER BY p.ProductID DESC
 ";
 $products_result = $conn->query($products_query);
 ?>
@@ -48,12 +61,56 @@ $products_result = $conn->query($products_query);
   <link rel="icon" type="image/png" href="../assets/img/Fabulous-finds.png" />
   <link rel="stylesheet" href="../assets/css/admin-style.css" />
   <title>Products - Fabulous Finds</title>
+  <style>
+    /* Additional styles for status badges */
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-active {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-disabled {
+      background-color: #f8d7da;
+      color: #000000ff;
+    }
+
+    .toggle-btn {
+      padding: 4px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .toggle-disable {
+      background-color: #ff0000ff;
+      color: black;
+    }
+
+    .toggle-enable {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .status-cell {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
   <!-- Main admin container -->
   <div class="container">
-    
+
     <!-- Left sidebar navigation -->
     <aside>
       <div class="top">
@@ -67,7 +124,7 @@ $products_result = $conn->query($products_query);
           <span class="material-icons-sharp">close</span>
         </div>
       </div>
-      
+
       <!-- Navigation menu -->
       <div class="sidebar">
         <a href="index.php">
@@ -110,13 +167,13 @@ $products_result = $conn->query($products_query);
         </a>
       </div>
     </aside>
-    
+
     <!-- Main content area -->
     <main>
       <h1>Products Management</h1>
       <div class="recent-orders">
         <h2>All Products</h2>
-        
+
         <!-- Products table -->
         <table>
           <thead>
@@ -126,6 +183,7 @@ $products_result = $conn->query($products_query);
               <th>Category</th>
               <th>Price</th>
               <th>Stock</th>
+              <th>Status</th>
               <th>Seller</th>
               <th>Actions</th>
             </tr>
@@ -136,29 +194,50 @@ $products_result = $conn->query($products_query);
               <tr>
                 <!-- Product ID -->
                 <td><?php echo $product['ProductID']; ?></td>
-                
+
                 <!-- Product name -->
                 <td><?php echo $product['ProductName']; ?></td>
-                
+
                 <!-- Product category -->
                 <td><?php echo $product['Category']; ?></td>
-                
+
                 <!-- Product price with currency formatting -->
                 <td>₱<?php echo number_format($product['Price'], 2); ?></td>
-                
+
                 <!-- Stock quantity -->
                 <td><?php echo $product['StockQuantity']; ?></td>
-                
+
+                <!-- Status -->
+                <td class="status-cell">
+                  <?php if ($product['Status'] == 'A'): ?>
+                    <span class="status-badge status-active">Active</span>
+                  <?php else: ?>
+                    <span class="status-badge status-disabled" >Disabled</span>
+                  <?php endif; ?>
+                </td>
+
                 <!-- Seller name (or N/A if not associated) -->
                 <td><?php echo $product['SellerName'] ?? 'N/A'; ?></td>
-                
+
                 <!-- Action buttons for product management -->
                 <td class="action-buttons">
-                  <!-- Edit button - links to edit_product.php with product ID -->
+                  <!-- Edit button -->
                   <a href="edit_product.php?id=<?php echo $product['ProductID']; ?>" class="btn btn-primary">Edit</a>
-                  
-                  <!-- Delete button - includes confirmation via URL parameter -->
-                  <a href="products.php?delete_id=<?php echo $product['ProductID']; ?>" class="btn btn-danger">Delete</a>
+
+                  <!-- Toggle Status button -->
+                  <?php if ($product['Status'] == 'A'): ?>
+                    <a href="products.php?toggle_id=<?php echo $product['ProductID']; ?>"
+                      class="toggle-btn toggle-disable"
+                      onclick="return confirm('Are you sure you want to disable this product? It will not be visible to customers.')">
+                      Disable
+                    </a>
+                  <?php else: ?>
+                    <a href="products.php?toggle_id=<?php echo $product['ProductID']; ?>"
+                      class="toggle-btn toggle-enable"
+                      onclick="return confirm('Are you sure you want to activate this product? It will be visible to customers.')">
+                      Activate
+                    </a>
+                  <?php endif; ?>
                 </td>
               </tr>
             <?php endwhile; ?>
@@ -166,7 +245,7 @@ $products_result = $conn->query($products_query);
         </table>
       </div>
     </main>
-    
+
     <!-- Right sidebar -->
     <div class="right">
       <div class="top">
@@ -174,13 +253,13 @@ $products_result = $conn->query($products_query);
         <button id="menu-btn">
           <span class="primary material-icons-sharp">menu</span>
         </button>
-        
+
         <!-- Theme toggle -->
         <div class="theme-toggler">
           <span class="material-icons-sharp active">light_mode</span>
           <span class="material-icons-sharp">dark_mode</span>
         </div>
-        
+
         <!-- Admin profile section -->
         <div class="profile">
           <div class="info">
@@ -194,13 +273,13 @@ $products_result = $conn->query($products_query);
       </div>
     </div>
   </div>
-  
+
   <!-- Admin dashboard JavaScript -->
   <script src="../assets/js/admin-js.js"></script>
 </body>
 
 </html>
-<?php 
+<?php
 // Close database connection
-$conn->close(); 
+$conn->close();
 ?>
