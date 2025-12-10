@@ -97,6 +97,12 @@ if(!empty($_SESSION['cart'])){
   <div class="top-header">
     <div class="logo">Fabulous Finds</div>
 
+    <!-- Search bar with icon -->
+    <div class="search-bar">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" placeholder="Search for items...">
+    </div>
+
     <!-- User action links -->
     <div class="userlinks">
       <!-- Cart link with item count badge -->
@@ -128,7 +134,7 @@ if(!empty($_SESSION['cart'])){
   <!-- Main navigation -->
   <nav class="menu">
     <a href="index.php">Home</a>
-    <a href="shop.php">Shop</a>
+    <a href="shop.php">Product</a>
     <a href="contact.php">Contact</a>
   </nav>
 </header>
