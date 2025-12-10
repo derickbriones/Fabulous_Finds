@@ -132,6 +132,7 @@ CREATE TABLE `product` (
   `Category` varchar(100) NOT NULL,
   `Price` decimal(10,2) NOT NULL,
   `StockQuantity` int(11) NOT NULL,
+  `Status` char(1) NOT NULL DEFAULT 'A' COMMENT 'A=Active, D=Disabled',
   `SellerID` int(11) NOT NULL,
   `image` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -140,11 +141,11 @@ CREATE TABLE `product` (
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`ProductID`, `ProductName`, `Category`, `Price`, `StockQuantity`, `SellerID`, `image`) VALUES
-(2, 'Louis Vuitton', 'Shirt', 499.90, 9, 1, 'lvshirt.jpg'),
-(4, 'Lacoste Polo Shirt', 'Shirt', 699.50, 13, 2, 'lacoste.webp'),
-(5, 'Denim Pants', 'Pants', 1999.90, 9, 3, 'levis.webp'),
-(6, 'Dior Perfume', 'Perfume', 2999.90, 7, 4, 'dior.avif');
+INSERT INTO `product` (`ProductID`, `ProductName`, `Category`, `Price`, `StockQuantity`, `Status`, `SellerID`, `image`) VALUES
+(2, 'Louis Vuitton', 'Shirt', 499.90, 9, 'A', 1, 'lvshirt.jpg'),
+(4, 'Lacoste Polo Shirt', 'Shirt', 699.50, 13, 'A', 2, 'lacoste.webp'),
+(5, 'Denim Pants', 'Pants', 1999.90, 9, 'A', 3, 'levis.webp'),
+(6, 'Dior Perfume', 'Perfume', 2999.90, 7, 'A', 4, 'dior.avif');
 
 -- --------------------------------------------------------
 
@@ -201,14 +202,15 @@ CREATE TABLE `user` (
 --
 -- Dumping data for table `user`
 --
+ALTER TABLE `user` ADD `ContactNo` VARCHAR(20) NOT NULL AFTER `Address`;
 
-INSERT INTO `user` (`UserID`, `Name`, `Email`, `Password`, `Address`) VALUES
-(1, 'Admin', 'admin@fabulousfinds.com', '$2y$10$wyv7Fw70kUNLCZ8JkR7OK.bBkLEXpXCg0v/IpuqFIN2OZ3yFGNXCO', 'Camalig\r\n'),
-(4, 'John Drex Cantor', 'johndrex14@gmail.com', '$2y$10$NCAqzNFF/7g3174mDWmpOuPHzXtr.wQID8yUfPOKI7eVsAfAK737a', 'Tobog Oas Albay\r\n'),
-(5, 'Dan Francis Etorma', 'danfrancisetorma@gmail.com', '$2y$10$JsoYRmU8sC2BybaTYdTEheUZLLPUzx68hqebz9NAqFuSftSirgv02', 'Sugcad Polangui Albay'),
-(6, 'Derick Briones', 'derickbriones@gmail.com', '$2y$10$hrn2VDMtKcrE2nwgw4bIUuZWv52kCd2v1ikPKfRcBjiqGxxNjn36O', 'Camalig Albay'),
-(7, 'Aljon Viñas', 'aljonvinas@gmail.com', '$2y$10$jImCpzDTu221.RDWVWEExeXmSfPKDIYV5ge13keyWZwXTGa8ihSvu', 'Centro Polangui'),
-(8, 'Gabriel Meshach Salcedo', 'gabrielmeshach@gmail.com', '$2y$10$nRAo/LAl8pCf174XAzsKn.YhKlyiWBOdtLy.UTU41zAAHHTpWCjie', 'Libon');
+INSERT INTO `user` (`UserID`, `Name`, `Email`, `Password`, `Address`, `ContactNo`) VALUES
+(1, 'Admin', 'admin@fabulousfinds.com', '$2y$10$wyv7Fw70kUNLCZ8JkR7OK.bBkLEXpXCg0v/IpuqFIN2OZ3yFGNXCO', 'Camalig\r\n', '09617552132'),
+(4, 'John Drex Cantor', 'johndrex14@gmail.com', '$2y$10$NCAqzNFF/7g3174mDWmpOuPHzXtr.wQID8yUfPOKI7eVsAfAK737a', 'Tobog Oas Albay\r\n', '09920646179'),
+(5, 'Dan Francis Etorma', 'danfrancisetorma@gmail.com', '$2y$10$JsoYRmU8sC2BybaTYdTEheUZLLPUzx68hqebz9NAqFuSftSirgv02', 'Sugcad Polangui Albay', '09928583763'),
+(6, 'Derick Briones', 'derickbriones@gmail.com', '$2y$10$hrn2VDMtKcrE2nwgw4bIUuZWv52kCd2v1ikPKfRcBjiqGxxNjn36O', 'Camalig Albay', '09618587036'),
+(7, 'Aljon Viñas', 'aljonvinas@gmail.com', '$2y$10$jImCpzDTu221.RDWVWEExeXmSfPKDIYV5ge13keyWZwXTGa8ihSvu', 'Centro Polangui', '09934504221'),
+(8, 'Gabriel Meshach Salcedo', 'gabrielmeshach@gmail.com', '$2y$10$nRAo/LAl8pCf174XAzsKn.YhKlyiWBOdtLy.UTU41zAAHHTpWCjie', 'Libon', '09176254321');
 
 --
 -- Indexes for dumped tables
@@ -361,6 +363,7 @@ ALTER TABLE `product`
 ALTER TABLE `transaction`
   ADD CONSTRAINT `fk_transaction_order` FOREIGN KEY (`OrderID`) REFERENCES `orders` (`OrderID`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_transaction_payment` FOREIGN KEY (`PaymentID`) REFERENCES `payment` (`PaymentID`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
