@@ -173,7 +173,7 @@ foreach ($_SESSION['cart'] as $productID => $qty) {
     <link rel="icon" type="image/png" href="../assets/img/Fabulous-finds.png" />
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f6f6f6;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -192,12 +192,13 @@ foreach ($_SESSION['cart'] as $productID => $qty) {
             max-width: 500px;
             width: 100%;
             animation: fadeInUp 0.6s ease-out;
+            border-top: 4px solid #7380ec;
         }
         
         .success-icon {
             width: 80px;
             height: 80px;
-            background: #4CAF50;
+            background: #7380ec;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -209,7 +210,7 @@ foreach ($_SESSION['cart'] as $productID => $qty) {
         .error-icon {
             width: 80px;
             height: 80px;
-            background: #f44336;
+            background: #ff7782;;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -224,55 +225,56 @@ foreach ($_SESSION['cart'] as $productID => $qty) {
         }
         
         .success-title {
-            color: #2E7D32;
+            color: #7380ec;
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 15px;
         }
         
         .error-title {
-            color: #c62828;
+            color: #ff7782;
             font-size: 2.5rem;
             font-weight: bold;
             margin-bottom: 15px;
         }
         
         .result-message {
-            color: #666;
+            color: #677483;
             font-size: 1.1rem;
             margin-bottom: 25px;
             line-height: 1.6;
         }
         
         .order-id {
-            background: #f8f9fa;
+            background: rgba(132, 139, 200, 0.18);
             padding: 15px;
             border-radius: 10px;
             margin: 20px 0;
-            border-left: 4px solid #4CAF50;
+            border-left: 4px solid #7380ec;
+            color: #7380ec;
         }
         
         .error-message {
-            background: #ffebee;
+            background: rgba(255, 119, 130, 0.1);
             padding: 15px;
             border-radius: 10px;
             margin: 20px 0;
-            border-left: 4px solid #f44336;
-            color: #c62828;
+            border-left: 4px solid #ff7782;
+             color: #ff7782;
         }
         
         .order-id strong {
-            color: #2E7D32;
+            color: #7380ec;
         }
         
         .countdown {
-            color: #666;
+            color: #677483;
             font-size: 0.9rem;
             margin-top: 20px;
         }
         
         .btn-home {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
+            background: #7380ec;
             color: white;
             border: none;
             padding: 12px 30px;
@@ -286,7 +288,7 @@ foreach ($_SESSION['cart'] as $productID => $qty) {
         }
         
         .btn-retry {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
+            background: #ff7782;
             color: white;
             border: none;
             padding: 12px 30px;
