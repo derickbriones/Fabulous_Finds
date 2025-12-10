@@ -1,3 +1,19 @@
+/* =========== ROOT VARIABLES (SAME AS CONTACT PAGE) =========== */
+:root {
+  --color-primary: #7380ec;
+  --color-danger: #ff7782;
+  --color-success: #41f1b6;
+  --color-warning: #ffbb55;
+  --color-white: #fff;
+  --color-info-dark: #7d8da1;
+  --color-info-light: #dce1eb;
+  --color-dark: #363949;
+  --color-light: rgba(132, 139, 200, 0.18);
+  --color-primary-variant: #111e88;
+  --color-dark-variant: #677483;
+  --color-background: #f6f6f6;
+}
+
 /* Smooth scroll */
 html {
     scroll-behavior: smooth;
@@ -6,7 +22,7 @@ html {
 body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f8f1e4; /* cream background */
+    background-color: var(--color-background);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -15,7 +31,7 @@ body {
 }
 
 .result-container {
-    background: white;
+    background: var(--color-white);
     border-radius: 10px;
     padding: 40px;
     text-align: center;
@@ -23,13 +39,13 @@ body {
     max-width: 500px;
     width: 100%;
     animation: fadeInUp 0.6s ease-out;
-    border-top: 4px solid #6b4b3e;
+    border-top: 4px solid var(--color-primary);
 }
 
 .success-icon {
     width: 80px;
     height: 80px;
-    background: #6b4b3e; /* dark brown */
+    background: var(--color-primary);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -41,7 +57,7 @@ body {
 .error-icon {
     width: 80px;
     height: 80px;
-    background: #8B4513; /* saddle brown for error */
+    background: var(--color-danger);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -51,62 +67,62 @@ body {
 }
 
 .success-icon i, .error-icon i {
-    color: white;
+    color: var(--color-white);
     font-size: 40px;
 }
 
 .success-title {
-    color: #6b4b3e; /* dark brown */
+    color: var(--color-primary);
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .error-title {
-    color: #8B4513; /* saddle brown */
+    color: var(--color-danger);
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .result-message {
-    color: #555; /* dark gray */
+    color: var(--color-dark-variant);
     font-size: 1.1rem;
     margin-bottom: 25px;
     line-height: 1.6;
 }
 
 .order-id {
-    background: #f8f1e4; /* cream background */
+    background: var(--color-light);
     padding: 15px;
     border-radius: 5px;
     margin: 20px 0;
-    border-left: 4px solid #6b4b3e;
-    color: #6b4b3e;
+    border-left: 4px solid var(--color-primary);
+    color: var(--color-primary);
 }
 
 .error-message {
-    background: #f8f1e4; /* cream background */
+    background: rgba(255, 119, 130, 0.1);
     padding: 15px;
     border-radius: 5px;
     margin: 20px 0;
-    border-left: 4px solid #8B4513;
-    color: #8B4513;
+    border-left: 4px solid var(--color-danger);
+    color: var(--color-danger);
 }
 
 .order-id strong {
-    color: #6b4b3e;
+    color: var(--color-primary);
 }
 
 .countdown {
-    color: #555; /* dark gray */
+    color: var(--color-dark-variant);
     font-size: 0.9rem;
     margin-top: 20px;
 }
 
 .btn-home {
-    background-color: #6b4b3e; /* dark brown */
-    color: #fff;
+    background-color: var(--color-primary);
+    color: var(--color-white);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -119,8 +135,8 @@ body {
 }
 
 .btn-retry {
-    background-color: #8B4513; /* saddle brown */
-    color: #fff;
+    background-color: var(--color-danger);
+    color: var(--color-white);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -133,14 +149,14 @@ body {
 }
 
 .btn-home:hover {
-    background-color: #5a3f33; /* darker brown */
-    color: #fff;
+    background-color: var(--color-primary-variant);
+    color: var(--color-white);
     transform: translateY(-2px);
 }
 
 .btn-retry:hover {
-    background-color: #7a3a10; /* darker saddle brown */
-    color: #fff;
+    background-color: #e04a58;
+    color: var(--color-white);
     transform: translateY(-2px);
 }
 
