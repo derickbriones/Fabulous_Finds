@@ -62,12 +62,87 @@ $payment_method = isset($_SESSION['payment_method']) ? $_SESSION['payment_method
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - Fabulous Finds</title>
   <link rel="icon" type="image/png" href="../assets/img/Fabulous-finds.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/checkout.css">
+  <style>
+    .checkout-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      justify-content: flex-end;
+    }
+    
+    .btn-cancel {
+      background: var(--color-danger);
+      color: var(--color-white);
+      padding: 12px 25px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background 0.3s, transform 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .btn-cancel:hover {
+      background: #e04a58;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
 
+  <!-- HEADER (SAME AS INDEX.PHP) -->
+  <header>
+    <div class="top-header">
+      <div class="logo">Fabulous Finds</div>
+
+      <!-- Search bar with icon -->
+      <div class="search-bar">
+        <span class="material-symbols-outlined">search</span>
+        <input type="text" placeholder="Search for items...">
+      </div>
+
+      <!-- User navigation links -->
+      <div class="userlinks">
+         <!-- Shopping cart link -->
+        <a href="cart.php">
+          <span class="material-symbols-outlined"> shopping_cart </span>
+        </a>
+
+        <!-- Order history link -->
+        <a href="orderlist.php">
+          <span class="material-symbols-outlined"> local_shipping </span>
+        </a>
+
+        <!-- Profile dropdown -->
+        <div class="profile-dropdown">
+          <button id="profile-btn">
+            <span class="material-symbols-outlined"> account_circle </span>
+          </button>
+          <div class="dropdown-menu" id="dropdown-menu">
+            <a href="#"> Edit Profile </a>
+            <a href="#"> Add Address </a>
+            <a href="#"> Settings </a>
+            <a href="../logout.php"> Logout </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main navigation menu -->
+    <nav class="menu">
+      <a href="index.php"> Home </a>
+      <a href="shop.php"> Product </a>
+      <a href="contact.php"> Contact </a>
+    </nav>
+  </header>
+
   <!-- Page title -->
-  <h1 style="text-align:center; margin:30px 0;">🧾 Order Summary</h1>
+  <h1 style="text-align:center; margin:30px 0;">Order Summary</h1>
 
   <!-- Main checkout container -->
   <div class="checkout-container">
@@ -116,19 +191,43 @@ $payment_method = isset($_SESSION['payment_method']) ? $_SESSION['payment_method
           <option value="Paymaya" <?php if($payment_method==='Paymaya') echo 'selected'; ?>> PayMaya </option>
         </select>
 
-        <!-- Shipping address input -->
-        <textarea name="address" placeholder="Enter your complete shipping address" required><?php echo htmlspecialchars($address); ?></textarea>
-
         <!-- Hidden input to pass total amount -->
         <input type="hidden" name="total" value="<?php echo htmlspecialchars($total); ?>">
 
-        <!-- Submit button to place order -->
-        <button type="submit" class="btn-place-order" style="margin-top:15px;"> Place Order </button>
+        <!-- Buttons container -->
+        <div class="checkout-buttons">
+          <!-- Cancel button -->
+          <a href="cart.php" class="btn-cancel">Cancel Order</a>
+          
+          <!-- Submit button to place order -->
+          <button type="submit" class="btn-place-order"> Place Order </button>
+        </div>
       </form>
 
     </div>
 
   </div>
+
+  <script>
+    // Profile dropdown functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileBtn = document.getElementById('profile-btn');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        
+        if (profileBtn && dropdownMenu) {
+            profileBtn.addEventListener('click', function() {
+                dropdownMenu.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!profileBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+            });
+        }
+    });
+  </script>
 
 </body>
 </html>
