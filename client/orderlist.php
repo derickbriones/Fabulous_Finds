@@ -29,12 +29,14 @@ $sql = "
         p.image,
         od.Quantity,
         (p.Price * od.Quantity) as Total,
-        u.Address as shipping_address
+        u.Address as shipping_address,
+        u.ContactNo
     FROM orders o
     JOIN orderdetails od ON o.OrderID = od.OrderID
     JOIN product p ON od.ProductID = p.ProductID
     JOIN user u ON o.UserID = u.UserID
     WHERE o.UserID = $user_id
+    ORDER BY o.OrderID DESC 
 ";
 
 // Execute the query
@@ -126,6 +128,7 @@ $result = mysqli_query($conn, $sql);
                 <th> QUANTITY </th>
                 <th> TOTAL </th>
                 <th> SHIPPING ADDRESS </th>
+                <th> CONTACT NO </th>
                 <th> STATUS </th>
                 <th> ACTION </th>
             </tr>
@@ -154,6 +157,9 @@ $result = mysqli_query($conn, $sql);
                     
                     <!-- Shipping address -->
                     <td><?php echo $order['shipping_address']; ?></td>
+
+                    <!-- Contact Number -->
+                    <td><?php echo $order['ContactNo']; ?></td>
                     
                     <!-- Order status with color coding -->
                     <td>
@@ -178,12 +184,14 @@ $result = mysqli_query($conn, $sql);
                             <a href="complete.php?id=<?php echo $order['OrderID']; ?>" style="text-decoration: none;">
                                 <button class="cancel-btn"> Order Received </button>
                             </a>
-                        <?php elseif ($order['Status'] == 'Cancelled'): ?>
-                            <!-- Cancelled order indicator -->
-                            <span style="color: #a8a8a8;"> Cancelled </span>
+                        <?php elseif ($order['Status'] == 'Cancelled' || $order['Status'] == 'Completed'): ?>
+                            <!-- View Invoice link for completed/cancelled orders -->
+                            <a href="view_invoice.php?order_id=<?php echo $order['OrderID']; ?>" style="text-decoration: none;">
+                                <button class="cancel-btn" style="background: #2196f3;"> View Invoice </button>
+                            </a>
                         <?php else: ?>
-                            <!-- Completed order indicator -->
-                            <span style="color: #4caf50;"> Completed </span>
+                            <!-- Other status indicator -->
+                            <span style="color: #a8a8a8;"> <?php echo $order['Status']; ?> </span>
                         <?php endif; ?>
                     </td>
                 </tr>
