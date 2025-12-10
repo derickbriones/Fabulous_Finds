@@ -59,7 +59,7 @@
             <h2>Customer Service</h2>
             <p>If you have any questions, feel free to contact us anytime.</p>
 
-            <p><strong>Email:</strong> support@fabulousfinds.com</p>
+            <p><strong>Email:</strong> admin@fabulousfinds.com</p>
             <p><strong>Phone:</strong> +63 912 345 6789</p>
         </div>
 
