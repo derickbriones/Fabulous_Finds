@@ -18,16 +18,16 @@ if (!$conn) {
 
 // Fetch complete order history with multiple table joins
 $history_query = "
-    SELECT o.OrderID, u.Name as CustomerName, s.Name as SellerName, 
+    SELECT o.OrderID, u.Name as CustomerName, u.ContactNo, s.Name as SellerName, 
            p.ProductName, od.Quantity, py.Amount, o.OrderDate, o.Status,
            py.PaymentMethod, py.PaymentDate
     FROM orders o
-    JOIN user u ON o.UserID = u.UserID            -- Customer information
-    JOIN seller s ON o.SellerID = s.SellerID      -- Seller information
-    JOIN orderdetails od ON o.OrderID = od.OrderID -- Order line items
-    JOIN product p ON od.ProductID = p.ProductID  -- Product details
-    LEFT JOIN payment py ON o.OrderID = py.OrderID -- Payment info (optional)
-    ORDER BY o.OrderDate DESC                     -- Show newest orders first
+    JOIN user u ON o.UserID = u.UserID
+    JOIN seller s ON o.SellerID = s.SellerID
+    JOIN orderdetails od ON o.OrderID = od.OrderID
+    JOIN product p ON od.ProductID = p.ProductID
+    LEFT JOIN payment py ON o.OrderID = py.OrderID
+    ORDER BY o.OrderDate DESC
 ";
 $history_result = $conn->query($history_query);
 ?>
@@ -116,6 +116,7 @@ $history_result = $conn->query($history_query);
             <tr>
               <th>Order ID</th>
               <th>Customer</th>
+              <th>Contact No</th>
               <th>Product</th>
               <th>Quantity</th>
               <th>Amount</th>
@@ -133,6 +134,9 @@ $history_result = $conn->query($history_query);
                 
                 <!-- Customer name -->
                 <td><?php echo $order['CustomerName']; ?></td>
+
+                <!-- Customer contact number -->
+                <td><?php echo $order['ContactNo'] ?? ''; ?></td>
                 
                 <!-- Product name -->
                 <td><?php echo $order['ProductName']; ?></td>
