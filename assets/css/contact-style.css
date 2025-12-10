@@ -8,47 +8,62 @@
   font-family: Arial, sans-serif;
 }
 
+/* =========== ROOT VARIABLES =========== */
+:root {
+  --color-primary: #7380ec;
+  --color-danger: #ff7782;
+  --color-success: #41f1b6;
+  --color-warning: #ffbb55;
+  --color-white: #fff;
+  --color-info-dark: #7d8da1;
+  --color-info-light: #dce1eb;
+  --color-dark: #363949;
+  --color-light: rgba(132, 139, 200, 0.18);
+  --color-primary-variant: #111e88;
+  --color-dark-variant: #677483;
+  --color-background: #f6f6f6;
+}
+
 body {
-  background: #fff9e9;
-  color: #333;
+  background: var(--color-background);
+  color: var(--color-dark);
 }
 
 /* =========================
            HEADER
         ========================= */
 header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-info-light);
   padding: 15px 5%;
 }
 
-/* --- TOP HEADER: logo + search bar katabi, user icons sa kanan --- */
 .top-header {
   display: flex;
   align-items: center;
-  gap: 20px; /* space between logo and search bar */
+  gap: 20px;
 }
 
 .logo {
   font-weight: bold;
   font-size: 1.5rem;
-  color: #333;
-  flex-shrink: 0; /* prevent logo from shrinking */
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
-/* Search bar (katabi ng logo) */
 .search-bar {
   position: relative;
-  flex: 1; /* kunin ang natitirang space sa row */
+  flex: 1;
   min-width: 150px;
-  max-width: 550px; /* adjust width kung gaano kahaba */
+  max-width: 550px;
 }
 
 .search-bar input {
   width: 100%;
   padding: 8px 12px 8px 35px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-info-light);
   border-radius: 20px;
+  background: var(--color-background);
   box-sizing: border-box;
 }
 
@@ -58,57 +73,53 @@ header {
   left: 10px;
   transform: translateY(-50%);
   font-size: 20px;
-  color: #888;
+  color: var(--color-info-dark);
 }
 
-/* User links (cart, account, delivery truck) - sa kanan */
 .userlinks {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: auto; /* push icons sa kanan */
+  margin-left: auto;
 }
 
 .userlinks a {
   text-decoration: none;
-  color: #555;
+  color: var(--color-dark-variant);
   font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
 }
 
 .userlinks a:hover {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
-/* Icon styling */
 .material-symbols-outlined {
   font-size: 22px;
   vertical-align: middle;
 }
 
-/* --- NAV MENU --- */
 .menu {
-  text-align: left; /* move links to the left */
+  text-align: left;
   margin-top: 12px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-info-light);
   padding-top: 10px;
 }
 
 .menu a {
   text-decoration: none;
-  color: #555;
-  margin-right: 20px; /* use margin-right instead of margin 0 20px for left alignment */
+  color: var(--color-dark-variant);
+  margin-right: 20px;
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .menu a:hover,
 .menu a.active {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
-/* Profile dropdown */
 .profile-dropdown {
   position: relative;
 }
@@ -117,22 +128,21 @@ header {
   background: none;
   border: none;
   cursor: pointer;
-  color: #555;
+  color: var(--color-dark-variant);
   padding: 5px;
 }
 
 .profile-dropdown button:hover {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
-/* Dropdown menu design */
 .dropdown-menu {
   display: none;
   position: absolute;
   right: 0;
   top: 35px;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--color-white);
+  border: 1px solid var(--color-info-light);
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   min-width: 160px;
@@ -142,25 +152,24 @@ header {
   transition: all 0.3s ease;
 }
 
+.dropdown-menu.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .dropdown-menu a {
   display: block;
   padding: 10px 15px;
-  color: #333;
+  color: var(--color-dark);
   text-decoration: none;
   font-size: 0.95rem;
   border-radius: 8px;
 }
 
 .dropdown-menu a:hover {
-  background: #f5f0e8;
-  color: #6b4b3e;
-}
-
-/* Show dropdown (with fade effect) */
-.dropdown-menu.show {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
+  background: var(--color-light);
+  color: var(--color-primary);
 }
 
 /* =========================
@@ -172,23 +181,22 @@ header {
   justify-content: center;
   margin-top: 60px;
   margin-bottom: 80px;
-  padding: 0 20px; /* Add horizontal space */
+  padding: 0 20px;
 }
 
 .big-card {
   display: flex;
   gap: 40px;
-  background: #fff;
+  background: var(--color-white);
   padding: 40px;
   border-radius: 20px;
   width: 100%;
-  max-width: 1000px; /* slightly smaller for spacing */
+  max-width: 1000px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* LEFT SIDE */
 .contact-info {
-  background: #f5f0e8;
+  background: var(--color-light);
   padding: 25px;
   border-radius: 15px;
   flex: 1;
@@ -196,21 +204,21 @@ header {
 
 .contact-info h2 {
   font-size: 1.8rem;
-  color: #6b4b3e;
+  color: var(--color-primary);
   margin-bottom: 10px;
 }
 
 .contact-info p {
   margin-bottom: 8px;
   font-size: 1rem;
+  color: var(--color-dark-variant);
 }
 
-/* RIGHT SIDE */
 .contact-form {
-  background: #ffffff;
+  background: var(--color-white);
   padding: 25px;
   border-radius: 15px;
-  flex: 1.1; /* slightly wider than left side */
+  flex: 1.1;
 }
 
 .form-group {
@@ -221,19 +229,20 @@ label {
   font-weight: bold;
   margin-bottom: 6px;
   display: block;
+  color: var(--color-dark);
 }
 
-/* INPUTS */
-input,
-textarea {
+/* FIXED: Only apply these styles to form inputs in the contact form, NOT the search bar */
+.contact-form input,
+.contact-form textarea {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-info-light);
   font-size: 1rem;
+  background: var(--color-background);
 }
 
-/* FILE UPLOAD */
 .file-container {
   display: flex;
   align-items: center;
@@ -245,26 +254,25 @@ textarea {
 }
 
 .custom-file-btn {
-  background: #ddd;
+  background: var(--color-info-light);
   padding: 7px 12px;
   border-radius: 6px;
   cursor: pointer;
+  color: var(--color-dark-variant);
 }
 
 #fileLabel {
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-dark-variant);
 }
 
-/* Hidden class for remove file button */
 .hidden {
   display: none;
 }
 
-/* SUBMIT BUTTON */
 .submit-btn {
-  background: #6b4b3e;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-white);
   border: none;
   padding: 12px 18px;
   border-radius: 6px;
@@ -276,7 +284,7 @@ textarea {
 }
 
 .submit-btn:hover {
-  background: #5a3f33;
+  background: var(--color-primary-variant);
 }
 
 /* =========================
@@ -291,5 +299,169 @@ textarea {
 
   .contact-wrapper {
     padding: 0 15px;
+  }
+}
+
+/* =========================
+           PRODUCTS PAGE STYLES
+        ========================= */
+.product-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 30px 5%;
+}
+
+.product-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-info-light);
+  border-radius: 10px;
+  padding: 15px;
+  width: 220px;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.product-card:hover {
+  border: 2px solid var(--color-primary);
+  transform: scale(1.03);
+}
+
+.product-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.product-card h2 {
+  font-size: 1rem;
+  margin: 10px 0 5px;
+  color: var(--color-dark);
+}
+
+.price {
+  color: var(--color-primary);
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.category {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  background: var(--color-light);
+  padding: 3px 10px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.stock {
+  font-size: 0.85rem;
+  color: var(--color-success);
+  margin-bottom: 5px;
+}
+
+.cart-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.quantity-group {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.qty-input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid var(--color-info-light);
+  border-radius: 5px;
+  padding: 3px;
+  background: var(--color-background);
+  color: var(--color-dark);
+}
+
+.qty-btn {
+  padding: 3px 8px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.qty-btn:hover {
+  background: var(--color-primary-variant);
+}
+
+.btn-cart {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-cart:hover {
+  background: var(--color-primary-variant);
+}
+
+/* =========================
+           MODAL STYLES
+        ========================= */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: var(--color-white);
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.close {
+  color: var(--color-info-dark);
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-danger);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
