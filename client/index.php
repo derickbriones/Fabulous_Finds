@@ -3,6 +3,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,9 @@ session_start();
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/client-homepage.css">
 </head>
+
 <body>
-    
+
   <header>
     <div class="top-header">
       <div class="logo">Fabulous Finds</div>
@@ -25,7 +27,7 @@ session_start();
 
       <!-- User navigation links -->
       <div class="userlinks">
-         <!-- Shopping cart link -->
+        <!-- Shopping cart link -->
         <a href="cart.php">
           <span class="material-symbols-outlined"> shopping_cart </span>
         </a>
@@ -76,13 +78,13 @@ session_start();
 
     <!-- Container for category cards -->
     <div class="category-list">
-       <!-- Individual category card - Shirts -->
+      <!-- Individual category card - Shirts -->
       <div class="category">
         <img src="../assets/img/lvshirt.jpg" alt="Shirts">
         <p> Shirts </p>
       </div>
 
-       <!-- Individual category card - Pants -->
+      <!-- Individual category card - Pants -->
       <div class="category">
         <img src="../assets/img/pants.jpg" alt="Pants">
         <p> Pants </p>
@@ -94,13 +96,13 @@ session_start();
         <p> Polo Shirts </p>
       </div>
 
-       <!-- Individual category card - Bags -->
+      <!-- Individual category card - Bags -->
       <div class="category">
         <img src="../assets/img/lvbag.webp" alt="Perfumes">
         <p> Bags </p>
       </div>
 
-       <!-- Individual category card - Perfumes -->
+      <!-- Individual category card - Perfumes -->
       <div class="category">
         <img src="../assets/img/dior.avif" alt="Perfumes">
         <p> Perfumes </p>
@@ -108,8 +110,9 @@ session_start();
 
     </div>
   </section>
-  
+
   <!-- Link to JavaScript file for interactive features -->
   <script src="../assets/js/landing.js"></script>
 </body>
+
 </html>
