@@ -18,19 +18,19 @@ if (!$conn) {
 
 // Fetch orders for invoice generation with multiple table joins
 $invoices_query = "
-    SELECT o.OrderID, u.Name as CustomerName, u.Email, u.Address,
+    SELECT o.OrderID, u.Name as CustomerName, u.Email, u.Address, u.ContactNo,
            s.Name as SellerName, s.ContactInfo as SellerContact,
            p.ProductName, p.Price, od.Quantity,
            py.Amount, py.PaymentMethod, py.PaymentDate,
            o.OrderDate, o.Status
     FROM orders o
-    JOIN user u ON o.UserID = u.UserID           -- Customer info
-    JOIN seller s ON o.SellerID = s.SellerID     -- Seller info
-    JOIN orderdetails od ON o.OrderID = od.OrderID -- Order items
-    JOIN product p ON od.ProductID = p.ProductID  -- Product details
-    LEFT JOIN payment py ON o.OrderID = py.OrderID -- Payment info (optional)
-    ORDER BY o.OrderDate DESC                     -- Show newest first
-    LIMIT 10                                      -- Limit to 10 invoices
+    JOIN user u ON o.UserID = u.UserID
+    JOIN seller s ON o.SellerID = s.SellerID
+    JOIN orderdetails od ON o.OrderID = od.OrderID
+    JOIN product p ON od.ProductID = p.ProductID
+    LEFT JOIN payment py ON o.OrderID = py.OrderID
+    ORDER BY o.OrderDate DESC
+    LIMIT 10
 ";
 $invoices_result = $conn->query($invoices_query);
 ?>
@@ -198,6 +198,7 @@ $invoices_result = $conn->query($invoices_query);
               <h3>Bill To:</h3>
               <p><strong><?php echo $invoice['CustomerName']; ?></strong><br>
                 <?php echo $invoice['Email']; ?><br>
+                <?php echo $invoice['ContactNo'] ?? ''; ?><br>
                 <?php echo $invoice['Address']; ?></p>
             </div>
             <!-- Seller (from) information -->
