@@ -5,7 +5,7 @@ session_start();
 // Variables for messages and form data
 $error = '';
 $success = '';
-$name = $email = $address = '';
+$name = $email = $address = $contact_no = '';
 
 // Process form when submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
     $address = $_POST['address'] ?? '';
+    $contact_no = $_POST['contact_no'] ?? '';
     
     // Validate user input
-    if (empty($name) || empty($email) || empty($password) || empty($confirm_password) || empty($address)) {
+    if (empty($name) || empty($email) || empty($password) || empty($confirm_password) || empty($address) || empty($contact_no)) {
         $error = 'All fields are required!';
     } elseif ($password !== $confirm_password) {
         $error = 'Passwords do not match!';
@@ -39,15 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 
                 // Insert new user into database
-                $stmt = $pdo->prepare("INSERT INTO user (Name, Email, Password, Address) VALUES (?, ?, ?, ?)");
-                $stmt->execute([$name, $email, $hashed_password, $address]);
+                $stmt = $pdo->prepare("INSERT INTO user (Name, Email, Password, Address, ContactNo) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$name, $email, $hashed_password, $address, $contact_no]);
                 
                 // Success message
                 $success = 'Registration successful! You can now login.';
                 
                 // Reset form fields after successful registration
                 if ($success) {
-                    $name = $email = $address = '';
+                    $name = $email = $address = $contact_no = '';
                 }
             }
             
@@ -110,6 +111,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <span class="input-border"></span>
                 </div>
 
+                <!-- Contact Number input -->
+                <div class="input-group">
+                    <input type="tel" id="contact_no" name="contact_no" required placeholder=" " value="<?php echo htmlspecialchars($contact_no); ?>">
+                    <label for="contact_no"> Contact Number </label>
+                    <span class="input-border"></span>
+                </div>
+
                 <!-- Password input -->
                 <div class="input-group">
                     <input type="password" id="password" name="password" required placeholder=" ">
@@ -134,15 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <!-- Submit button with loading spinner -->
                 <button type="submit" class="submit-btn">
                     <span class="btn-text"> Create Account </span>
-                    <div class="btn-loader">
-                        <!-- Loading spinner SVG -->
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                            <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2" opacity="0.25"/>
-                            <path d="M16 9a7 7 0 01-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                            <animateTransform attributeName="transform" type="rotate" dur="1s" values="0 9 9;360 9 9" repeatCount="indefinite"/>
-                            </path>
-                        </svg>
-                    </div>
                 </button>
             </form>
 
