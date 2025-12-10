@@ -6,15 +6,31 @@
   font-family: Arial, sans-serif;
 }
 
+/* =========== ROOT VARIABLES (SAME AS CONTACT PAGE) =========== */
+:root {
+  --color-primary: #7380ec;
+  --color-danger: #ff7782;
+  --color-success: #41f1b6;
+  --color-warning: #ffbb55;
+  --color-white: #fff;
+  --color-info-dark: #7d8da1;
+  --color-info-light: #dce1eb;
+  --color-dark: #363949;
+  --color-light: rgba(132, 139, 200, 0.18);
+  --color-primary-variant: #111e88;
+  --color-dark-variant: #677483;
+  --color-background: #f6f6f6;
+}
+
 body {
-  background: #fff9e9; /* background ng buong page */
-  color: #333;
+  background: var(--color-background);
+  color: var(--color-dark);
 }
 
 /* Header */
 header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-info-light);
   padding: 15px 5%;
 }
 
@@ -28,7 +44,7 @@ header {
 .logo {
   font-weight: bold;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--color-primary);
   flex-shrink: 0; /* prevent logo from shrinking */
 }
 
@@ -43,8 +59,9 @@ header {
 .search-bar input {
   width: 100%;
   padding: 8px 12px 8px 35px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-info-light);
   border-radius: 20px;
+  background: var(--color-background);
   box-sizing: border-box;
 }
 
@@ -54,7 +71,7 @@ header {
   left: 10px;
   transform: translateY(-50%);
   font-size: 20px;
-  color: #888;
+  color: var(--color-info-dark);
 }
 
 /* User links (cart, account, delivery truck) - sa kanan */
@@ -67,14 +84,14 @@ header {
 
 .userlinks a {
   text-decoration: none;
-  color: #555;
+  color: var(--color-dark-variant);
   font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
 }
 
 .userlinks a:hover {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
 /* Icon styling */
@@ -87,20 +104,20 @@ header {
 .menu {
   text-align: left; /* move links to the left */
   margin-top: 12px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--color-info-light);
   padding-top: 10px;
 }
 
 .menu a {
   text-decoration: none;
-  color: #555;
+  color: var(--color-dark-variant);
   margin-right: 20px; /* use margin-right instead of margin 0 20px for left alignment */
   font-size: 0.95rem;
   font-weight: 500;
 }
 
 .menu a:hover {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
 /* Banner */
@@ -110,7 +127,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 50px 5%;
-  background: #fff9e9;
+  background: var(--color-background);
 }
 
 .banner-text {
@@ -122,26 +139,27 @@ header {
 .banner-text h1 {
   font-size: 2rem;
   margin-bottom: 10px;
+  color: var(--color-dark);
 }
 
 .banner-text p {
-  color: #666;
+  color: var(--color-dark-variant);
   margin-bottom: 20px;
 }
 
 /* 🔸 Shop Now Button */
 .btn {
-  background: #6b4b3e; /* slightly lighter dark brown */
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-white);
   text-decoration: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-weight: bold;
   transition: 0.3s;
 }
 
 .btn:hover {
-  background: #5a3f33; /* darker on hover */
+  background: var(--color-primary-variant);
 }
 
 .banner-image {
@@ -159,12 +177,12 @@ header {
 .categories {
   padding: 40px 5%;
   text-align: left;
-  background: #fefcf8; /* soft white background */
+  background: var(--color-white);
 }
 
 .categories h3 {
   margin-bottom: 25px;
-  color: #333;
+  color: var(--color-dark);
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
 }
@@ -178,8 +196,8 @@ header {
 }
 
 .category {
-  background: #fff;
-  border: 1px solid #eee;
+  background: var(--color-white);
+  border: 1px solid var(--color-info-light);
   border-radius: 8px;
   padding: 10px;
   width: 170px;
@@ -188,7 +206,7 @@ header {
 }
 
 .category:hover {
-  border: 2px solid #c19a6b; /* 🔸 brown border sa hover */
+  border: 2px solid var(--color-primary);
   transform: scale(1.05);
   transition: 0.3s;
 }
@@ -202,7 +220,8 @@ header {
 
 .category p {
   margin-top: 10px;
-  font-weight: 500; 
+  font-weight: 500;
+  color: var(--color-dark);
 }
 
 .profile-dropdown {
@@ -213,12 +232,12 @@ header {
   background: none;
   border: none;
   cursor: pointer;
-  color: #555;
+  color: var(--color-dark-variant);
   padding: 5px;
 }
 
 .profile-dropdown button:hover {
-  color: #c19a6b;
+  color: var(--color-primary);
 }
 
 /* Dropdown menu design */
@@ -227,8 +246,8 @@ header {
   position: absolute;
   right: 0;
   top: 35px;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--color-white);
+  border: 1px solid var(--color-info-light);
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   min-width: 160px;
@@ -241,15 +260,15 @@ header {
 .dropdown-menu a {
   display: block;
   padding: 10px 15px;
-  color: #333;
+  color: var(--color-dark);
   text-decoration: none;
   font-size: 0.95rem;
   border-radius: 8px;
 }
 
 .dropdown-menu a:hover {
-  background: #f5f0e8;
-  color: #6b4b3e;
+  background: var(--color-light);
+  color: var(--color-primary);
 }
 
 /* Show dropdown (with fade effect) */
