@@ -88,10 +88,18 @@ $customers_percentage_change = $new_customers > 0 ? '+25%' : '0%';
 
 // Fetch 5 most recent orders for the dashboard table
 $recent_orders_query = "
-    SELECT o.OrderID, u.Name as CustomerName, o.OrderDate, o.Status, p.Amount, u.ContactNo 
+    SELECT DISTINCT
+        o.OrderID, 
+        u.Name as CustomerName, 
+        o.OrderDate, 
+        o.Status, 
+        u.ContactNo,
+        (SELECT SUM(p2.Price * od2.Quantity) 
+         FROM orderdetails od2 
+         JOIN product p2 ON od2.ProductID = p2.ProductID 
+         WHERE od2.OrderID = o.OrderID) as OrderTotal
     FROM orders o 
     JOIN user u ON o.UserID = u.UserID 
-    LEFT JOIN payment p ON o.OrderID = p.OrderID 
     ORDER BY o.OrderDate DESC 
     LIMIT 5
 ";
@@ -280,7 +288,7 @@ $recent_orders_result = $conn->query($recent_orders_query);
                   <td>#<?php echo $order['OrderID']; ?></td>
                   <td><?php echo htmlspecialchars($order['CustomerName']); ?></td>
                   <td><?php echo htmlspecialchars($order['ContactNo'] ?? ''); ?></td>
-                  <td>₱<?php echo number_format($order['Amount'] ?? 0, 2); ?></td>
+                  <td>₱<?php echo number_format($order['OrderTotal'] ?? 0, 2); ?></td>
                   <td><?php echo date('M j, Y', strtotime($order['OrderDate'])); ?></td>
                   <!-- Status with color coding -->
                   <td class="<?php echo $order['Status'] == 'Completed' ? 'success' : ($order['Status'] == 'Cancelled' ? 'danger' : 'warning'); ?>">
