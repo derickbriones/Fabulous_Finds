@@ -214,7 +214,7 @@ th {
     background: var(--color-light);
     color: var(--color-primary);
     padding: 15px;
-    border-bottom: 2px solid var(--color-info-light);
+    border: 1px solid var(--color-info-light); /* FIX */
     font-weight: bold;
     text-align: center;
 }
@@ -222,15 +222,12 @@ th {
 /* Table cells */
 td {
     padding: 15px;
-    border-bottom: 1px solid var(--color-info-light);
+    border: 1px solid var(--color-info-light); /* FIX */
     text-align: center;
     color: var(--color-dark-variant);
+    vertical-align: top; /* IMPORTANT for rowspan */
 }
 
-/* Remove bottom border from last row */
-tr:last-child td {
-    border-bottom: none;
-}
 
 /* Product info box */
 .product-box {
@@ -345,4 +342,81 @@ tr:hover {
         padding: 6px 10px;
         font-size: 0.85rem;
     }
+
+/* Order Received button - add to existing CSS */
+.order-received-btn {
+    background: var(--color-success);
+    color: var(--color-white);
+    padding: 8px 14px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-weight: 500;
+}
+
+.order-received-btn:hover {
+    background: #2ee09d;
+    transform: translateY(-1px);
+}
+
+/* Status classes - add to existing CSS */
+.status-pending {
+    color: var(--color-warning);
+    font-weight: 500;
+}
+
+.status-shipped {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.status-delivered {
+    color: var(--color-success);
+    font-weight: 500;
+}
+
+.status-cancelled {
+    color: var(--color-danger);
+    font-weight: 500;
+}
+
+.status-completed {
+    color: var(--color-success);
+    font-weight: 500;
+}
+
+/* Improve table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--color-light);
+    margin-bottom: 20px;
+}
+
+th {
+    background: var(--color-light);
+    color: var(--color-primary);
+    padding: 15px;
+    border-bottom: 2px solid var(--color-primary);
+    font-weight: bold;
+    text-align: center;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid var(--color-info-light);
+    text-align: center;
+    color: var(--color-dark-variant);
+    vertical-align: middle;
+}
+
+/* Remove row hover from summary rows */
+tr:last-child:hover,
+tr:nth-last-child(2):hover {
+    background-color: transparent;
+}
 }
