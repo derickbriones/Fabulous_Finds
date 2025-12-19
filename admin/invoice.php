@@ -18,17 +18,28 @@ if (!$conn) {
 
 // Fetch orders for invoice generation with multiple table joins
 $invoices_query = "
-    SELECT o.OrderID, u.Name as CustomerName, u.Email, u.Address, u.ContactNo,
-           s.Name as SellerName, s.ContactInfo as SellerContact,
-           p.ProductName, p.Price, od.Quantity,
-           py.Amount, py.PaymentMethod, py.PaymentDate,
-           o.OrderDate, o.Status
+    SELECT 
+        o.OrderID, 
+        u.Name as CustomerName, 
+        u.Email, 
+        u.Address, 
+        u.ContactNo,
+        py.Amount as OrderTotal, 
+        py.PaymentMethod, 
+        o.OrderDate, 
+        o.Status,
+        GROUP_CONCAT(p.ProductName SEPARATOR '; ') as ProductNames,
+        GROUP_CONCAT(p.Price SEPARATOR '; ') as Prices,
+        GROUP_CONCAT(od.Quantity SEPARATOR '; ') as Quantities,
+        GROUP_CONCAT((p.Price * od.Quantity) SEPARATOR '; ') as ItemTotals,
+        GROUP_CONCAT(CONCAT(s.Name, ' - ', s.ContactInfo) SEPARATOR '; ') as SellerInfos
     FROM orders o
     JOIN user u ON o.UserID = u.UserID
-    JOIN seller s ON o.SellerID = s.SellerID
     JOIN orderdetails od ON o.OrderID = od.OrderID
     JOIN product p ON od.ProductID = p.ProductID
+    JOIN seller s ON p.SellerID = s.SellerID
     LEFT JOIN payment py ON o.OrderID = py.OrderID
+    GROUP BY o.OrderID
     ORDER BY o.OrderDate DESC
     LIMIT 10
 ";
@@ -44,7 +55,7 @@ $invoices_result = $conn->query($invoices_query);
   <link rel="icon" type="image/png" href="../assets/img/Fabulous-finds.png" />
   <link rel="stylesheet" href="../assets/css/admin-style.css" />
   <title>Invoices - Fabulous Finds</title>
-  
+
   <!-- Invoice-specific styling -->
   <style>
     /* Invoice container styling */
@@ -54,6 +65,8 @@ $invoices_result = $conn->query($invoices_query);
       border-radius: var(--card-border-radius);
       box-shadow: var(--box-shadow);
       margin-top: 1rem;
+      margin-bottom: 2rem;
+      page-break-inside: avoid;
     }
 
     /* Invoice header with company and invoice info */
@@ -65,11 +78,8 @@ $invoices_result = $conn->query($invoices_query);
       padding-bottom: 1rem;
     }
 
-    /* Two-column layout for customer and seller info */
+    /* Single column layout for customer info only */
     .invoice-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
       margin-bottom: 2rem;
     }
 
@@ -77,6 +87,7 @@ $invoices_result = $conn->query($invoices_query);
     .invoice-items table {
       width: 100%;
       border-collapse: collapse;
+      margin-bottom: 1rem;
     }
 
     .invoice-items th,
@@ -86,11 +97,47 @@ $invoices_result = $conn->query($invoices_query);
       text-align: left;
     }
 
+    .invoice-items th {
+      background-color: var(--color-light);
+      font-weight: bold;
+    }
+
+    /* Seller info styling */
+    .seller-info {
+      font-size: 0.9rem;
+      color: var(--color-dark-variant);
+      margin-top: 0.2rem;
+    }
+
     /* Total amount section */
     .invoice-total {
       text-align: right;
-      margin-top: 1rem;
+      margin-top: 2rem;
       font-size: 1.2rem;
+      border-top: 2px solid var(--color-dark);
+      padding-top: 1rem;
+    }
+
+    .invoice-total .grand-total {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--color-primary);
+      margin-bottom: 1rem;
+    }
+
+    /* Status badges */
+    .success {
+      color: var(--color-success);
+      font-weight: bold;
+    }
+
+    .warning {
+      color: var(--color-warning);
+      font-weight: bold;
+    }
+
+    .danger {
+      color: var(--color-danger);
       font-weight: bold;
     }
 
@@ -103,6 +150,23 @@ $invoices_result = $conn->query($invoices_query);
       border-radius: var(--border-radius-1);
       cursor: pointer;
       border: none;
+      float: right;
+    }
+
+    .print-btn:hover {
+      background: var(--color-dark);
+    }
+
+    /* Item totals column */
+    .item-total {
+      font-weight: bold;
+    }
+
+    /* Clear float */
+    .clearfix::after {
+      content: "";
+      clear: both;
+      display: table;
     }
   </style>
 </head>
@@ -110,7 +174,7 @@ $invoices_result = $conn->query($invoices_query);
 <body>
   <!-- Main admin container -->
   <div class="container">
-    
+
     <!-- Left sidebar navigation -->
     <aside>
       <div class="top">
@@ -124,7 +188,7 @@ $invoices_result = $conn->query($invoices_query);
           <span class="material-icons-sharp">close</span>
         </div>
       </div>
-      
+
       <!-- Navigation menu -->
       <div class="sidebar">
         <a href="index.php">
@@ -167,15 +231,28 @@ $invoices_result = $conn->query($invoices_query);
         </a>
       </div>
     </aside>
-    
+
     <!-- Main content area -->
     <main>
       <h1>Invoice & Receipt Management</h1>
 
       <!-- Loop through each invoice result -->
-      <?php while ($invoice = $invoices_result->fetch_assoc()): ?>
+      <?php while ($invoice = $invoices_result->fetch_assoc()):
+        // Parse the concatenated strings into arrays
+        $productNames = explode('; ', $invoice['ProductNames']);
+        $prices = explode('; ', $invoice['Prices']);
+        $quantities = explode('; ', $invoice['Quantities']);
+        $itemTotals = explode('; ', $invoice['ItemTotals']);
+        $sellerInfos = explode('; ', $invoice['SellerInfos']);
+
+        // Calculate subtotal from individual items (kept for internal calculation only)
+        $subtotal = 0;
+        foreach ($itemTotals as $itemTotal) {
+          $subtotal += floatval($itemTotal);
+        }
+      ?>
         <div class="invoice-container">
-          
+
           <!-- Invoice header with company and invoice info -->
           <div class="invoice-header">
             <!-- Company information -->
@@ -191,7 +268,7 @@ $invoices_result = $conn->query($invoices_query);
             </div>
           </div>
 
-          <!-- Customer and seller information -->
+          <!-- Customer information only -->
           <div class="invoice-details">
             <!-- Customer (bill to) information -->
             <div>
@@ -201,12 +278,6 @@ $invoices_result = $conn->query($invoices_query);
                 <?php echo $invoice['ContactNo'] ?? ''; ?><br>
                 <?php echo $invoice['Address']; ?></p>
             </div>
-            <!-- Seller (from) information -->
-            <div>
-              <h3>From:</h3>
-              <p><strong><?php echo $invoice['SellerName']; ?></strong><br>
-                <?php echo $invoice['SellerContact']; ?></p>
-            </div>
           </div>
 
           <!-- Invoice items table -->
@@ -214,54 +285,73 @@ $invoices_result = $conn->query($invoices_query);
             <table>
               <thead>
                 <tr>
+                  <th>No.</th>
                   <th>Description</th>
-                  <th>Quantity</th>
                   <th>Unit Price</th>
-                  <th>Total</th>
+                  <th>Quantity</th>
+                  <th>Seller</th>
+                  <th class="item-total">Item Total</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><?php echo $invoice['ProductName']; ?></td>
-                  <td><?php echo $invoice['Quantity']; ?></td>
-                  <td>₱<?php echo number_format($invoice['Price'], 2); ?></td>
-                  <td>₱<?php echo number_format($invoice['Amount'] ?? 0, 2); ?></td>
-                </tr>
+                <?php
+                $itemCount = count($productNames);
+                for ($i = 0; $i < $itemCount; $i++):
+                  // Parse seller info to separate name and contact
+                  $sellerInfo = $sellerInfos[$i] ?? '';
+                  $sellerParts = explode(' - ', $sellerInfo);
+                  $sellerName = $sellerParts[0] ?? '';
+                  $sellerContact = $sellerParts[1] ?? '';
+                ?>
+                  <tr>
+                    <td><?php echo $i + 1; ?></td>
+                    <td><?php echo $productNames[$i]; ?></td>
+                    <td>₱<?php echo number_format($prices[$i], 2); ?></td>
+                    <td><?php echo $quantities[$i]; ?></td>
+                    <td>
+                      <strong><?php echo $sellerName; ?></strong>
+                      <?php if ($sellerContact): ?>
+                        <div class="seller-info">Contact: <?php echo $sellerContact; ?></div>
+                      <?php endif; ?>
+                    </td>
+                    <td class="item-total">₱<?php echo number_format($itemTotals[$i], 2); ?></td>
+                  </tr>
+                <?php endfor; ?>
               </tbody>
             </table>
           </div>
 
-          <!-- Invoice totals and payment info -->
+          <!-- Invoice total section - Subtotal removed -->
           <div class="invoice-total">
-            <p>Total: ₱<?php echo number_format($invoice['Amount'] ?? 0, 2); ?></p>
-            <p>Payment Method: <?php 
-              // Format payment method for display
-              if (isset($invoice['PaymentMethod'])) {
-                if ($invoice['PaymentMethod'] == 'gcash') {
-                  echo 'GCash';
-                } elseif ($invoice['PaymentMethod'] == 'paymaya') {
-                  echo 'PayMaya';
-                } elseif ($invoice['PaymentMethod'] == 'cod') {
-                  echo 'Cash on Delivery';
-                } else {
-                  echo $invoice['PaymentMethod'];
-                }
-              } else {
-                echo 'N/A';
-              }
-            ?></p>
-            <!-- Order status with color coding -->
+            <p class="grand-total">Order Total: ₱<?php echo number_format($invoice['OrderTotal'] ?? $subtotal, 2); ?></p>
+            <p>Payment Method: <?php
+                                if (isset($invoice['PaymentMethod'])) {
+                                  if (strtolower($invoice['PaymentMethod']) == 'gcash') {
+                                    echo 'GCash';
+                                  } elseif (strtolower($invoice['PaymentMethod']) == 'paymaya') {
+                                    echo 'PayMaya';
+                                  } elseif (strtolower($invoice['PaymentMethod']) == 'cod') {
+                                    echo 'Cash on Delivery';
+                                  } else {
+                                    echo $invoice['PaymentMethod'];
+                                  }
+                                } else {
+                                  echo 'N/A';
+                                }
+                                ?></p>
             <p>Status: <span class="<?php echo $invoice['Status'] == 'Completed' ? 'success' : ($invoice['Status'] == 'Cancelled' ? 'danger' : 'warning'); ?>">
                 <?php echo $invoice['Status']; ?>
               </span></p>
           </div>
 
           <!-- Print button for this invoice -->
-          <button class="print-btn" onclick="window.print()">Print Invoice</button>
+          <div class="clearfix">
+            <button class="print-btn" onclick="printInvoice(this)">Print Invoice</button>
+          </div>
         </div>
       <?php endwhile; ?>
     </main>
-    
+
     <!-- Right sidebar -->
     <div class="right">
       <div class="top">
@@ -269,13 +359,13 @@ $invoices_result = $conn->query($invoices_query);
         <button id="menu-btn">
           <span class="primary material-icons-sharp">menu</span>
         </button>
-        
+
         <!-- Theme toggle -->
         <div class="theme-toggler">
           <span class="material-icons-sharp active">light_mode</span>
           <span class="material-icons-sharp">dark_mode</span>
         </div>
-        
+
         <!-- Admin profile section -->
         <div class="profile">
           <div class="info">
@@ -289,13 +379,57 @@ $invoices_result = $conn->query($invoices_query);
       </div>
     </div>
   </div>
-  
+
   <!-- Admin dashboard JavaScript -->
   <script src="../assets/js/admin-js.js"></script>
+  <script>
+    // Function to print individual invoice
+    function printInvoice(button) {
+      const invoiceContainer = button.closest('.invoice-container');
+      const originalContents = document.body.innerHTML;
+
+      // Create a new window for printing
+      const printWindow = window.open('', '', 'height=600,width=800');
+      printWindow.document.write('<html><head><title>Invoice Print</title>');
+      printWindow.document.write('<style>');
+      printWindow.document.write(`
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .invoice-container { border: 1px solid #ccc; padding: 20px; }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .invoice-details { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background-color: #f5f5f5; }
+        .invoice-total { text-align: right; margin-top: 20px; border-top: 2px solid #333; padding-top: 10px; }
+        .grand-total { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
+        .item-total { font-weight: bold; }
+        .seller-info { font-size: 0.85em; color: #666; margin-top: 2px; }
+        @media print {
+          body { margin: 0; }
+          .no-print { display: none; }
+        }
+      `);
+      printWindow.document.write('</style></head><body>');
+      printWindow.document.write(invoiceContainer.innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
+
+      // Wait for content to load then print
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
+    }
+
+    // Global print function (for all invoices)
+    window.printAll = function() {
+      window.print();
+    }
+  </script>
 </body>
 
 </html>
-<?php 
+<?php
 // Close database connection
-$conn->close(); 
+$conn->close();
 ?>
