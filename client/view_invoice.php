@@ -22,20 +22,33 @@ if (!isset($_SESSION['user_id'])) {
 $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
 $user_id = $_SESSION['user_id'];
 
-// Fetch specific order for this user only
+// Fetch specific order with MULTIPLE items using GROUP_CONCAT
 $invoice_query = "
-    SELECT o.OrderID, u.Name as CustomerName, u.Email, u.Address, u.ContactNo,
-           s.Name as SellerName, s.ContactInfo as SellerContact,
-           p.ProductName, p.Price, od.Quantity,
-           py.Amount, py.PaymentMethod, py.PaymentDate,
-           o.OrderDate, o.Status
+    SELECT 
+        o.OrderID, 
+        u.Name as CustomerName, 
+        u.Email, 
+        u.Address, 
+        u.ContactNo,
+        o.OrderDate, 
+        o.Status,
+        py.Amount as OrderTotal,
+        py.PaymentMethod, 
+        py.PaymentDate,
+        GROUP_CONCAT(DISTINCT CONCAT(s.Name, ' - ', s.ContactInfo) SEPARATOR '; ') as SellerInfos,
+        GROUP_CONCAT(p.ProductName SEPARATOR '; ') as ProductNames,
+        GROUP_CONCAT(p.Price SEPARATOR '; ') as Prices,
+        GROUP_CONCAT(od.Quantity SEPARATOR '; ') as Quantities,
+        GROUP_CONCAT((p.Price * od.Quantity) SEPARATOR '; ') as ItemTotals
     FROM orders o
     JOIN user u ON o.UserID = u.UserID
-    JOIN seller s ON o.SellerID = s.SellerID
     JOIN orderdetails od ON o.OrderID = od.OrderID
     JOIN product p ON od.ProductID = p.ProductID
+    JOIN seller s ON p.SellerID = s.SellerID
     LEFT JOIN payment py ON o.OrderID = py.OrderID
     WHERE o.OrderID = $order_id AND o.UserID = $user_id
+    GROUP BY o.OrderID, u.Name, u.Email, u.Address, u.ContactNo, 
+             o.OrderDate, o.Status, py.Amount, py.PaymentMethod, py.PaymentDate
 ";
 
 $result = $conn->query($invoice_query);
@@ -44,6 +57,19 @@ $invoice = $result->fetch_assoc();
 // Check if order exists and belongs to user
 if (!$invoice) {
     die("Invoice not found or access denied.");
+}
+
+// Parse the concatenated strings into arrays
+$productNames = explode('; ', $invoice['ProductNames'] ?? '');
+$prices = explode('; ', $invoice['Prices'] ?? '');
+$quantities = explode('; ', $invoice['Quantities'] ?? '');
+$itemTotals = explode('; ', $invoice['ItemTotals'] ?? '');
+$sellerInfos = explode('; ', $invoice['SellerInfos'] ?? '');
+
+// Calculate subtotal from individual items
+$subtotal = 0;
+foreach ($itemTotals as $itemTotal) {
+    $subtotal += floatval($itemTotal);
 }
 ?>
 
@@ -59,7 +85,7 @@ if (!$invoice) {
 </head>
 <body>
 
-<!-- Header (Same as orderlist) -->
+<!-- Header-->
 <header>
     <div class="top-header">
         <div class="logo">Fabulous Finds</div>
@@ -116,38 +142,50 @@ if (!$invoice) {
                 <?php echo htmlspecialchars($invoice['ContactNo'] ?? 'N/A'); ?><br>
                 <?php echo htmlspecialchars($invoice['Address']); ?></p>
             </div>
-            
-            <div class="billing-section">
-                <h4>From:</h4>
-                <p><strong><?php echo htmlspecialchars($invoice['SellerName']); ?></strong><br>
-                <?php echo htmlspecialchars($invoice['SellerContact']); ?></p>
-            </div>
         </div>
 
         <!-- Invoice Table -->
         <table class="invoice-table">
             <thead>
                 <tr>
+                    <th>No.</th>
                     <th>Description</th>
-                    <th>Qty</th>
                     <th>Unit Price</th>
-                    <th>Amount</th>
+                    <th>Quantity</th>
+                    <th>Seller</th>
+                    <th>Item Total</th>
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $itemCount = count($productNames);
+                for ($i = 0; $i < $itemCount; $i++):
+                    // Parse seller info to separate name and contact
+                    $sellerInfo = $sellerInfos[$i] ?? '';
+                    $sellerParts = explode(' - ', $sellerInfo);
+                    $sellerName = $sellerParts[0] ?? '';
+                    $sellerContact = $sellerParts[1] ?? '';
+                ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($invoice['ProductName']); ?></td>
-                    <td><?php echo $invoice['Quantity']; ?></td>
-                    <td>₱<?php echo number_format($invoice['Price'], 2); ?></td>
-                    <td>₱<?php echo number_format($invoice['Amount'] ?? ($invoice['Price'] * $invoice['Quantity']), 2); ?></td>
+                    <td><?php echo $i + 1; ?></td>
+                    <td><?php echo htmlspecialchars($productNames[$i]); ?></td>
+                    <td>₱<?php echo number_format($prices[$i], 2); ?></td>
+                    <td><?php echo $quantities[$i]; ?></td>
+                    <td>
+                        <strong><?php echo htmlspecialchars($sellerName); ?></strong>
+                        <?php if ($sellerContact): ?>
+                        <div class="seller-info">Contact: <?php echo htmlspecialchars($sellerContact); ?></div>
+                        <?php endif; ?>
+                    </td>
+                    <td>₱<?php echo number_format($itemTotals[$i], 2); ?></td>
                 </tr>
+                <?php endfor; ?>
             </tbody>
         </table>
 
         <!-- Totals -->
         <div class="totals-section">
-            <p>Subtotal: ₱<?php echo number_format($invoice['Price'] * $invoice['Quantity'], 2); ?></p>
-            <p class="grand-total">Total: ₱<?php echo number_format($invoice['Amount'] ?? ($invoice['Price'] * $invoice['Quantity']), 2); ?></p>
+            <p class="grand-total">Order Total: ₱<?php echo number_format($invoice['OrderTotal'] ?? $subtotal, 2); ?></p>
         </div>
 
         <!-- Payment Info -->
