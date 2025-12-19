@@ -16,16 +16,22 @@ if (!$conn) {
   die("Database connection failed: " . mysqli_connect_error());
 }
 
-// Fetch all orders with detailed information from multiple tables
 $orders_query = "
-    SELECT o.OrderID, u.Name as CustomerName, u.ContactNo, s.Name as SellerName, 
-           p.ProductName, od.Quantity, py.Amount, o.OrderDate, o.Status
-    FROM orders o
+    SELECT 
+        o.OrderID, 
+        u.Name as CustomerName, 
+        u.ContactNo, 
+        s.Name as SellerName, 
+        p.ProductName, 
+        od.Quantity, 
+        (p.Price * od.Quantity) as ItemTotal,
+        o.OrderDate, 
+        o.Status
+    FROM orderdetails od
+    JOIN orders o ON od.OrderID = o.OrderID
     JOIN user u ON o.UserID = u.UserID
-    JOIN seller s ON o.SellerID = s.SellerID
-    JOIN orderdetails od ON o.OrderID = od.OrderID
     JOIN product p ON od.ProductID = p.ProductID
-    LEFT JOIN payment py ON o.OrderID = py.OrderID
+    JOIN seller s ON p.SellerID = s.SellerID
     ORDER BY o.OrderDate DESC
 ";
 $orders_result = $conn->query($orders_query);
@@ -45,7 +51,7 @@ $orders_result = $conn->query($orders_query);
 <body>
   <!-- Main admin container -->
   <div class="container">
-    
+
     <!-- Left sidebar navigation -->
     <aside>
       <div class="top">
@@ -59,7 +65,7 @@ $orders_result = $conn->query($orders_query);
           <span class="material-icons-sharp">close</span>
         </div>
       </div>
-      
+
       <!-- Navigation menu -->
       <div class="sidebar">
         <a href="index.php">
@@ -102,15 +108,15 @@ $orders_result = $conn->query($orders_query);
         </a>
       </div>
     </aside>
-    
+
     <!-- Main content area -->
     <main>
       <h1>Orders Management</h1>
-      
+
       <!-- Orders table container -->
       <div class="recent-orders">
         <h2>All Orders</h2>
-        
+
         <!-- Orders table -->
         <table>
           <thead>
@@ -132,28 +138,28 @@ $orders_result = $conn->query($orders_query);
               <tr>
                 <!-- Order ID with hash prefix -->
                 <td>#<?php echo $order['OrderID']; ?></td>
-                
+
                 <!-- Customer name -->
                 <td><?php echo $order['CustomerName']; ?></td>
 
                 <!-- Customer contact number -->
                 <td><?php echo $order['ContactNo'] ?? ''; ?></td>
-                
+
                 <!-- Seller name -->
                 <td><?php echo $order['SellerName']; ?></td>
-                
+
                 <!-- Product name -->
                 <td><?php echo $order['ProductName']; ?></td>
-                
+
                 <!-- Quantity ordered -->
                 <td><?php echo $order['Quantity']; ?></td>
-                
+
                 <!-- Order amount with currency formatting -->
-                <td>₱<?php echo number_format($order['Amount'] ?? 0, 2); ?></td>
-                
+                <td>₱<?php echo number_format($order['ItemTotal'] ?? 0, 2); ?></td>
+
                 <!-- Order date formatted -->
                 <td><?php echo date('M j, Y', strtotime($order['OrderDate'])); ?></td>
-                
+
                 <!-- Order status with color-coded CSS classes -->
                 <td class="<?php echo $order['Status'] == 'Completed' ? 'success' : ($order['Status'] == 'Cancelled' ? 'danger' : 'warning'); ?>">
                   <?php echo $order['Status']; ?>
@@ -164,7 +170,7 @@ $orders_result = $conn->query($orders_query);
         </table>
       </div>
     </main>
-    
+
     <!-- Right sidebar -->
     <div class="right">
       <div class="top">
@@ -172,13 +178,13 @@ $orders_result = $conn->query($orders_query);
         <button id="menu-btn">
           <span class="primary material-icons-sharp">menu</span>
         </button>
-        
+
         <!-- Theme toggle -->
         <div class="theme-toggler">
           <span class="material-icons-sharp active">light_mode</span>
           <span class="material-icons-sharp">dark_mode</span>
         </div>
-        
+
         <!-- Admin profile section -->
         <div class="profile">
           <div class="info">
@@ -192,13 +198,13 @@ $orders_result = $conn->query($orders_query);
       </div>
     </div>
   </div>
-  
+
   <!-- Admin dashboard JavaScript -->
   <script src="../assets/js/admin-js.js"></script>
 </body>
 
 </html>
-<?php 
+<?php
 // Close database connection
-$conn->close(); 
+$conn->close();
 ?>
